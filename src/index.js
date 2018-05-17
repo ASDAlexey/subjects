@@ -1,5 +1,8 @@
 import { interval } from 'rxjs/observable/interval';
 import { take } from 'rxjs/operators/take';
+import { Subject } from 'rxjs/Subject';
+
+const subject = new Subject();
 
 const observable = interval(1000).pipe(take(5));
 
@@ -15,6 +18,7 @@ const observerB = {
   complete: () => (console.log('B done')),
 };
 
+/*
 const bridgeObserver = {
   observers: [],
   next: function (x) {
@@ -30,11 +34,10 @@ const bridgeObserver = {
     this.observers.push(observer);
   },
 };
-
-bridgeObserver.subscribe(observerA);
-observable.subscribe(bridgeObserver);
+*/
 // observable.subscribe(observerA);
 
-setTimeout(() => {
-  bridgeObserver.subscribe(observerB);
-}, 2000);
+observable.subscribe(subject);
+
+subject.subscribe(observerA);
+setTimeout(() => (subject.subscribe(observerB)), 2000);
