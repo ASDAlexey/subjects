@@ -29,7 +29,7 @@ const observerA = {
   complete: () => (console.log('A done')),
 };
 
-connectableObservale.connect();
+const sub = connectableObservale.connect();
 
 // subject.subscribe(observerA);
 connectableObservale.subscribe(observerA);
@@ -54,6 +54,11 @@ setTimeout(() => {
   console.log('observer B subscribed!');
   // }, 400);
 }, 2000);
+
+setTimeout(() => {
+  sub.unsubscribe();
+  console.log('unsubscribe');
+}, 5000);
 
 // subject.error('error');
 // setInterval(() => (subject.next(10)), 1000);
