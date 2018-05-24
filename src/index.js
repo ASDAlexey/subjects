@@ -1,6 +1,11 @@
 import { interval } from 'rxjs/observable/interval';
 import { take } from 'rxjs/operators/take';
 import { multicast } from 'rxjs/operators/multicast';
+import { publish } from 'rxjs/operators/publish';
+import { publishReplay } from 'rxjs/operators/publishReplay';
+import { publishBehavior } from 'rxjs/operators/publishBehavior';
+import { publishLast } from 'rxjs/operators/publishLast';
+import { share } from 'rxjs/operators/share';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
@@ -23,11 +28,17 @@ import { AsyncSubject } from 'rxjs/AsyncSubject';
 //   multicast(new ReplaySubject(100)),
 // );
 
-const shared = interval(1000).pipe(
+/*const shared = interval(1000).pipe(
   take(5),
-  // multicast(new Subject()),
-  multicast(new ReplaySubject(100)),
-).refCount();
+  // multicast(new Subject()), // publish() === multicast(new Subject())
+  // publish(),
+  // publishReplay(100), // publishReplay === multicast(new ReplaySubject(100))
+  // publishBehavior('initial value'), // publishBehavior === multicast(new BehaviorSubject('initial value'))
+  // publishLast(), // publishLast === multicast(new AsyncSubject('initial value'))
+  // multicast(new ReplaySubject(100)),
+).refCount();*/
+
+const shared = interval(1000).pipe(take(5),share()); // share === publish + refCount()
 
 const observerA = {
   next: (x) => (console.log('A next ', x)),
