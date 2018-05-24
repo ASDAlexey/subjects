@@ -17,11 +17,17 @@ import { AsyncSubject } from 'rxjs/AsyncSubject';
 // const subject = new ReplaySubject(100); // analog BehaviorSubject subject - store only last value
 // const subject = new AsyncSubject();
 
-const connectableObservale = interval(1000).pipe(
+// const connectableObservale = interval(1000).pipe(
+//   take(5),
+//   // multicast(new Subject()),
+//   multicast(new ReplaySubject(100)),
+// );
+
+const shared = interval(1000).pipe(
   take(5),
   // multicast(new Subject()),
   multicast(new ReplaySubject(100)),
-);
+).refCount();
 
 const observerA = {
   next: (x) => (console.log('A next ', x)),
@@ -29,10 +35,11 @@ const observerA = {
   complete: () => (console.log('A done')),
 };
 
-const sub = connectableObservale.connect();
+// const sub = connectableObservale.connect();
 
 // subject.subscribe(observerA);
-connectableObservale.subscribe(observerA);
+// connectableObservale.subscribe(observerA);
+const subA = shared.subscribe(observerA);
 console.log('observer A subscribed!');
 
 const observerB = {
@@ -48,15 +55,22 @@ const observerB = {
 // setTimeout(() => (subject.next(3)), 300);
 // setTimeout(() => (subject.complete()), 350);
 
+let subB;
 setTimeout(() => {
   // subject.subscribe(observerB);
-  connectableObservale.subscribe(observerB);
+  // connectableObservale.subscribe(observerB);
+  subB = shared.subscribe(observerB);
   console.log('observer B subscribed!');
   // }, 400);
 }, 2000);
 
 setTimeout(() => {
-  sub.unsubscribe();
+  subA.unsubscribe();
+  console.log('unsubscribe');
+}, 3000);
+
+setTimeout(() => {
+  subB.unsubscribe();
   console.log('unsubscribe');
 }, 5000);
 
