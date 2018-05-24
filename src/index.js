@@ -3,11 +3,18 @@ import { take } from 'rxjs/operators/take';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { AsyncSubject } from 'rxjs/AsyncSubject';
 
 // const subject = new Subject();
 // const subject = new BehaviorSubject(0);
 // const subject = new ReplaySubject(Number.POSITIVE_INFINITY, 250); // 1000 - how long time ReplaySubject should store data
-const subject = new ReplaySubject(100); // analog BehaviorSubject subject - store only last value
+
+// ReplaySubject: replays many, before or after completion
+// BehaviorSubject: replays one, only before completion
+// AsyncSubject: replays one, only if completed
+
+// const subject = new ReplaySubject(100); // analog BehaviorSubject subject - store only last value
+const subject = new AsyncSubject();
 
 const observerA = {
   next: (x) => (console.log('A next ', x)),
